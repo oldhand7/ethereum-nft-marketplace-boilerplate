@@ -25,8 +25,8 @@ function NFTBalance() {
   const { chainId, marketAddress, contractABI } = useMoralisDapp();
   const { Moralis } = useMoralis();
   const [visible, setVisibility] = useState(false);
-  const [nftToSend, setNftToSend] = useState(null);
-  const [price, setPrice] = useState(1);
+  const [nftToSell, setNftToSell] = useState(null);
+  const [price, setPrice] = useState();
   const [loading, setLoading] = useState(false);
   const contractProcessor = useWeb3ExecuteFunction();
   const contractABIJson = JSON.parse(contractABI);
@@ -92,7 +92,9 @@ function NFTBalance() {
   }
 
   const handleSellClick = (nft) => {
-    setNftToSend(nft);
+    // setNftToSend(nft);
+    setNftToSell(nft);
+
     setVisibility(true);
   };
 
@@ -143,10 +145,10 @@ function NFTBalance() {
   function addItemImage() {
     const itemImage = new ItemImage();
 
-    itemImage.set("image", nftToSend.image);
-    itemImage.set("nftContract", nftToSend.token_address);
-    itemImage.set("tokenId", nftToSend.token_id);
-    itemImage.set("name", nftToSend.name);
+    itemImage.set("image", nftToSell.image);
+    itemImage.set("nftContract", nftToSell.token_address);
+    itemImage.set("tokenId", nftToSell.token_id);
+    itemImage.set("name", nftToSell.name);
 
     itemImage.save();
   }
@@ -209,26 +211,27 @@ function NFTBalance() {
       </div>
 
       <Modal
-        title={`List ${nftToSend?.name} #${nftToSend?.token_id} For Sale`}
+        title={`List ${nftToSell?.name} #${nftToSell?.token_id} For Sale`}
         visible={visible}
         onCancel={() => setVisibility(false)}
-        onOk={() => list(nftToSend, price)}
+        onOk={() => list(nftToSell, price)}
         okText="List"
         footer={[
           <Button onClick={() => setVisibility(false)}>
             Cancel
           </Button>,
-          <Button onClick={() => approveAll(nftToSend)} type="primary">
+          <Button onClick={() => approveAll(nftToSell)} type="primary">
             Approve
           </Button>,
-          <Button onClick={() => list(nftToSend, price)} type="primary">
+          <Button onClick={() => list(nftToSell, price)} type="primary">
             List
           </Button>
         ]}
       >
         <Spin spinning={loading}>
           <img
-            src={`${nftToSend?.image}`}
+            src={`${nftToSell?.image}`}
+            alt="nft"
             style={{
               width: "250px",
               margin: "auto",
@@ -238,7 +241,7 @@ function NFTBalance() {
           />
           <Input
             autoFocus
-            placeholder="Listing Price in MATIC"
+            placeholder="Listing Price in ETHEREUM"
             onChange={(e) => setPrice(e.target.value)}
           />
         </Spin>
